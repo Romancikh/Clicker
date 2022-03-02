@@ -125,3 +125,6 @@ cython_debug/
 
 # PyCharm
 .idea/
+
+# Game saves
+data/save
