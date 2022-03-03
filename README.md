@@ -4,7 +4,12 @@ Some kind of CLicker in retro style
 ## Usage
 Clone repository:
 ```cmd
-git clone https://github.com/Romancikh/Clicker.git && cd Clicker
+git clone https://github.com/Romancikh/Clicker.git
+```
+
+Move to work directory:
+```cmd
+cd Clicker
 ```
 
 Create virtual enviroment:
