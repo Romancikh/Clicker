@@ -58,8 +58,9 @@ ch_bn = [
 wn_bn = [
     Button(108, 202, 384, 128, 'button_idle', 'button_hover', 'win')
 ]
-music_list = [f'data/music/mus{i}.mp3' for i in range(8)]
+music_list = [f'data/music/mus{i + 1}.mp3' for i in range(8)]
 now_music = False
+money = False
 
 
 def play_music():
@@ -136,9 +137,14 @@ def show_win():
 
 
 def show_not_enough():
+    global money
     n_e_font = font.Font(font_folder + 'M 8pt.ttf', 40)
-    n_e = n_e_font.render(f'YOU NEED {price - balance}☺', True,
-                          (255, 150, 150), (50, 50, 50))
+    if money:
+        n_e = n_e_font.render(f'YOU NEED {price - clicks}', True,
+                              (255, 150, 150), (50, 50, 50))
+    else:
+        n_e = n_e_font.render(f'YOU NEED {price - balance}☺', True,
+                              (255, 150, 150), (50, 50, 50))
     size = n_e.get_size()
     screen.blit(n_e, (300 - size[0] // 2, 200))
 
@@ -232,7 +238,7 @@ def do_time_click():
 
 
 def mouse_action():
-    global state, work_bn, gm_bg, balance, click_power, click_per_sec, clicks, price, sound
+    global state, work_bn, gm_bg, balance, click_power, click_per_sec, clicks, price, sound, money
     mp = mouse.get_pressed()
     now_time = 0
     if state == 'mm' and now_time != time():
@@ -351,22 +357,25 @@ def mouse_action():
                     balance += 1
                     clicks -= 10
                 else:
-                    state = 'not_enough'
                     price = 10
+                    money = True
+                    state = 'not_enough'
             if point_inside(as_bn[1]) and mp[work_bn]:
                 if clicks >= 100:
                     balance += 10
                     clicks -= 100
                 else:
-                    state = 'not_enough'
                     price = 100
+                    money = True
+                    state = 'not_enough'
             if point_inside(as_bn[2]) and mp[work_bn]:
                 if clicks >= 1000:
                     balance += 100
                     clicks -= 1000
                 else:
-                    state = 'not_enough'
+                    money = True
                     price = 1000
+                    state = 'not_enough'
         now_time = time()
     if state == 'win':
         if point_inside(gm_te[0]) and mp[work_bn]:
@@ -383,6 +392,7 @@ def mouse_action():
         if now_time != time():
             if mp[work_bn]:
                 state = 'shop'
+                money = False
 
 
 while True:
