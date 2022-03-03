@@ -13,6 +13,7 @@ global_time = int(time())
 mm_bg = image.load(background_folder + 'main_menu_bg.png')
 gm_bg = image.load(background_folder + 'game_bg_active.png')
 logo = transform.scale(image.load(enemy_folder + 'virus.png'), (450, 450))
+playlist = mixer.Channel(0)
 mm_bn = [
     Button(54, 50, 128, 128, 'start_idle', 'start_hover'),
     Button(236, 50, 128, 128, 'info_idle', 'info_hover'),
@@ -57,6 +58,18 @@ ch_bn = [
 wn_bn = [
     Button(108, 202, 384, 128, 'button_idle', 'button_hover', 'win')
 ]
+music_list = [f'data/music/mus{i}.mp3' for i in range(8)]
+now_music = False
+
+
+def play_music():
+    playlist.set_volume(int(sound) * 0.05)
+    global now_music
+    from random import choice
+    if len(music_list) != 0:
+        if not playlist.get_busy():
+            now_music = choice(music_list)
+            playlist.play(mixer.Sound(now_music))
 
 
 def do_save():
@@ -68,7 +81,7 @@ def do_save():
             text += str(clicks) + '\n'
             text += str(balance) + '\n'
             text += str(work_bn) + '\n'
-            text += str(sound) + '\n'
+            text += str(int(sound)) + '\n'
             file.write(text)
     else:
         mkdir('data/save')
@@ -92,7 +105,7 @@ def load_save():
                     clicks = int(text[2])
                 balance = int(text[3])
                 work_bn = int(text[4])
-                sound = text[5]
+                sound = bool(int(text[5]))
         else:
             do_save()
     else:
@@ -219,11 +232,10 @@ def do_time_click():
 
 
 def mouse_action():
-    global state, work_bn, gm_bg
-    global balance, click_power, click_per_sec, clicks, price
+    global state, work_bn, gm_bg, balance, click_power, click_per_sec, clicks, price, sound
     mp = mouse.get_pressed()
     now_time = 0
-    if state == 'mm':
+    if state == 'mm' and now_time != time():
         if point_inside(mm_bn[2]) and mp[work_bn]:
             do_save()
             quit()
@@ -235,10 +247,11 @@ def mouse_action():
         now_time = time()
     if state == 'options':
         if point_inside(op_bn[0]) and mp[work_bn]:
-            state = 'mm'
             do_save()
+            state = 'mm'
         if point_inside(op_te[0]) and mp[work_bn]:
             op_te[0].on = not op_te[0].on
+            sound = op_te[0].on
         if point_inside(op_te[1]) and mp[work_bn]:
             if op_te[1].on:
                 op_te[1].on = not op_te[1].on
@@ -379,14 +392,14 @@ while True:
             quit()
             exit()
         elif action.type == MOUSEBUTTONDOWN:
-            if state == 'mm':
-                load_save()
-                if work_bn == 2:
-                    op_te[1].on = True
-                if sound:
-                    op_te[0].on = True
             mouse_action()
+    if state == 'mm':
+        load_save()
+        if work_bn == 2:
+            op_te[1].on = True
+        op_te[0].on = sound
 
+    play_music()
     do_time_click()
     show_all()
     display.update()
