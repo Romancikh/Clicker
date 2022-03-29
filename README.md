@@ -3,31 +3,31 @@ Some kind of CLicker in retro style
 
 ## Usage
 Clone repository:
-```cmd
+```bash
 git clone https://github.com/Romancikh/Clicker.git
 ```
 
 Move to work directory:
-```cmd
+```bash
 cd Clicker
 ```
 
 Create virtual enviroment:
-```cmd
+```bash
 python -m venv venv
 ```
 
 Activate virtual enviroment:
-```cmd
-venv\Scripts\activate
+```bash
+source ./venv/Scripts/activate
 ```
 
 Install packages from requirements.txt:
-```cmd
+```bash
 pip install -r requirements.txt
 ```
 
 Run game:
-```cmd
+```bash
 python main.py
 ```
